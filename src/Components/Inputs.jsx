@@ -5,17 +5,15 @@ import {
   setGrammarResponse,
 } from "../features/grammar/grammarSlice";
 import axios from "axios";
-// import InputUnderline from "./InputUnderline";
+import InputUnderline from "./InputUnderline";
 import Response from "./Response";
 
 const Inputs = () => {
   const dispatch = useDispatch();
   let [lang, setLang] = useState("en-GB");
   let [input, setInput] = useState("");
-  //   let [inputUnderline, setInputUnderline] = useState("");
+  let [inputUnderline, setInputUnderline] = useState("");
   const grammarResponse = useSelector(selectGrammarResponse);
-
-  console.log(grammarResponse);
 
   const grammarCheck = async (input, lang) => {
     const encodedParams = new URLSearchParams();
@@ -36,39 +34,39 @@ const Inputs = () => {
     try {
       const response = await axios.request(options);
       dispatch(setGrammarResponse(response.data));
-      //   addUnderline(response.data);
+      addUnderline(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  //   const addUnderline = (response) => {
-  //     const inputArray = input.split("");
-  //     response.response.errors.map((item, index) => {
-  //       let offsetCalculator = item.offset + index * 2;
-  //       inputArray.splice(offsetCalculator, 0, "<u>");
-  //       inputArray.splice(offsetCalculator + item.length + 1, 0, "</u>");
-  //       console.log(item.offset, item.length);
-  //     });
-  //     const tempInput = inputArray.join("");
-  //     setInputUnderline(`<div contenteditable='true'>'${tempInput}'</div>`);
-  //   };
-
-  //   console.log(inputUnderline);
+  const addUnderline = (response) => {
+    const inputArray = input.split("");
+    response.response.errors.map((item, index) => {
+      let offsetCalculator = item.offset + index * 2;
+      inputArray.splice(offsetCalculator, 0, "<u>");
+      inputArray.splice(offsetCalculator + item.length + 1, 0, "</u>");
+      console.log(item.offset, item.length);
+    });
+    const tempInput = inputArray.join("");
+    setInputUnderline(`<div contenteditable='true'>'${tempInput}'</div>`);
+  };
 
   return (
     <div>
-      {/* {inputUnderline ? (
+      {inputUnderline ? (
         <InputUnderline inputUnderline={inputUnderline} />
-      ) : ( */}
-      <textarea
-        spellCheck={false}
-        onInput={(e) => {
-          setInput(e.target.value);
-        }}
-        placeholder="Enter text here..."
-      ></textarea>
-      {/* )} */}
+      ) : (
+        <input
+          type="text"
+          className="textInput"
+          spellCheck={false}
+          onInput={(e) => {
+            setInput(e.target.value);
+          }}
+          placeholder="Enter text here..."
+        ></input>
+      )}
       <button
         onClick={() => {
           grammarCheck(input, lang);
@@ -98,7 +96,7 @@ const Inputs = () => {
         <option value="zh-CN">Mandarin</option>
         <option value="el-GR">Greek</option>
       </select>
-      {grammarResponse ? <Response /> : <></>}
+      {/* {grammarResponse ? <Response /> : <></>} */}
     </div>
   );
 };
